@@ -12,19 +12,22 @@ const WINES = gql`{
 }
 `;
 
-export default function Wines() {
+const Wines = ({ newWines }) => {
   const { loading, error, data } = useQuery(WINES);
+
+  const renderWines = (wines) => {
+    return wines.map(({ id, name, grapeType }) => (
+      <ListItem key={id}>
+        {name} <Badge>{grapeType}</Badge>
+      </ListItem>   
+    ));
+  };
 
   if (loading) return <p>Loading ...</p>;
   if (error) return <p>Error :(</p>;
 
-  return(
-    <List>
-      {data.wines.map(({ id, name, grapeType }) => (
-        <ListItem key={id}>
-          {name} <Badge>{grapeType}</Badge>
-        </ListItem>
-      ))}
-    </List>
-  )
-}
+  return <List>{renderWines(newWines || data.wines)}</List>;
+    
+};
+
+export default Wines;
