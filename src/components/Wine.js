@@ -1,10 +1,10 @@
 import React from "react";
-import { useQuery, gql } from "@apollo/client";
+import { useSubscription, gql } from "@apollo/client";
 import { List, ListItem } from "./shared/List";
 import { Badge } from "./shared/Badge";
 
 const WINE = gql`
-  query WINE($id: uuid!) {
+  subscription WINE($id: uuid!) {
     wines_by_pk(id: $id) {
       id
       name
@@ -22,7 +22,7 @@ const Wine = ({
     params: { id },
   },
 }) => {
-  const { loading, error, data } = useQuery(WINE, {variables: { id },
+  const { loading, error, data } = useSubscription(WINE, {variables: { id },
   });
 
   if (loading) return <p>Loading ...</p>;
