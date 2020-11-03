@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import { useSubscription, gql } from "@apollo/client";
+import { useSubscription, useMutation, gql } from "@apollo/client";
 import { List, ListItem } from "./shared/List";
 import { Badge } from "./shared/Badge";
 import InputForm from "./shared/InputForm";
@@ -19,6 +19,14 @@ const WINE = gql`
   }
 `;
 
+const ADD_REVIEW = gql`
+mutation ($body: String!, $id: uuid!) {
+    AddTrashlessReview(body: $body, id: $id) {
+      affected_rows
+    }
+  }
+`;
+
 const Wine = ({
   match: {
     params: { id },
@@ -28,6 +36,8 @@ const Wine = ({
     const [inputVal, setInputVal] = useState("");
   const { loading, error, data } = useSubscription(WINE, {variables: { id },
   });
+
+  const [addReview] = useMutation(ADD_REVIEW);
 
   if (loading) return <p>Loading ...</p>;
   if (error) return <p>Error :(</p>;
@@ -42,7 +52,13 @@ const Wine = ({
       <InputForm
         inputVal = {inputVal}
         onChange={(e) => setInputVal(e.target.value)}
-        onSubmit={() => {}}
+        onSubmit={() => {
+            addReview({ variables: {id, body: inputVal } })
+            .then(() => setInputVal(""))
+            .catch((e) => {
+              setInputVal(e.message);
+        });
+    }}
         buttonText = "Submit"
     />
       <List>
