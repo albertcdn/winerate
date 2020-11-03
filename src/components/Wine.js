@@ -1,7 +1,8 @@
-import React from "react";
+import React, {useState} from "react";
 import { useSubscription, gql } from "@apollo/client";
 import { List, ListItem } from "./shared/List";
 import { Badge } from "./shared/Badge";
+import InputForm from "./shared/InputForm";
 
 const WINE = gql`
   subscription WINE($id: uuid!) {
@@ -22,6 +23,8 @@ const Wine = ({
     params: { id },
   },
 }) => {
+
+    const [inputVal, setInputVal] = useState("");
   const { loading, error, data } = useSubscription(WINE, {variables: { id },
   });
 
@@ -35,6 +38,12 @@ const Wine = ({
       <h3>
         {name} <Badge>{grapeType}</Badge>
       </h3>
+      <InputForm
+        inputVal = {inputVal}
+        onChange={(e) => setInputVal(e.target.value)}
+        onSubmit={() => {}}
+        buttonText = "Submit"
+    />
       <List>
         {reviews.map((review) => (
           <ListItem key={review.id}>{review.body}</ListItem>
