@@ -10,9 +10,10 @@ const WINE = gql`
       id
       name
       grapeType
-      reviews {
+      reviews(order_by: {created_at: desc}) {
         id
         body
+        created_at
       }
     }
   }
